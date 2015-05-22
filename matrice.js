@@ -10,50 +10,46 @@ this.matrice=null;
 
 
 this.creerMatrice=function(nb){
+
+
+var kk=0;
+while((kk*4)<nb){
+
+kk++;
+
+}
+
+kk++;
+
 var mat=[];
 
-var hauteure=Math.floor((nb-6)/2)+2+(nb-6)%2;;
+//var hauteure=Math.floor((nb-6)/2)+2+(nb-6)%2;;
+//var hauteure;
+//if(nb<=3) hauteure=1;
+//else if(nb<=6) hauteure=2;
+//else hauteure=2+Math.floor((nb-6)/2)+nb%2;
 
 
-for(var i=0;i<hauteure;i++){
+for(var i=0;i<kk;i++){
 	mat[i]=[];
-	for(var j=0;j<3;j++)
+	for(var j=0;j<kk;j++)
 		mat[i][j]=false;
 	}
 
-	
-if(nb<=4){
 
-	mat[0][0]=true;
-	mat[0][2]=true;
-	mat[1][0]=true;
-	mat[1][2]=true;
+	for(i=0;i<kk;i++){
 
-}else{
+		for(j=0;j<kk;j++){
 
-	
-	// mettre a vrai la prepiere et la derniere ligne
-	
-	for(i=0;i<3;i++){
-		mat[0][i]=true;
-		mat[hauteure-1][i]=true;
-	
+			if((i==0)||(i==kk-1)||(j==0)||(j==kk-1)) mat[i][j]=true;
+			else mat[i][j]=false;
+
+						}
+
 	}
-
-	// mettre a vrai la premiere et la derniere colonne
-	
-	for(var i=1;i<hauteure-1;i++){
-	
-		mat[i][0]=true;
-		mat[i][2]=true;
-	
-	}
-	
-
-}	
-	
 	
 	this.matrice=mat;
+	
 };
 
 
@@ -63,8 +59,9 @@ this.ajouter=function(e){
 
 	for(var i=0;i<this.matrice.length;i++){
 	
-		for(var j=0;j<3;j++){
+		for(var j=0;j<this.matrice.length;j++){
 			if(this.matrice[i][j]==true){
+				
 				this.matrice[i][j]=e;
 				return;
 				
@@ -99,7 +96,7 @@ this.falserCasesLibres=function(){
 
 	for(var i=0;i<this.matrice.length;i++){
 	
-		for(var j=0;j<3;j++){
+		for(var j=0;j<this.matrice.length;j++){
 			
 		
 			if(this.matrice[i][j]==true){
@@ -121,7 +118,7 @@ this.dessiner=function(){
 
 for(var i=0;i<this.matrice.length;i++){
 
-	for(var j=0;j<3;j++){
+	for(var j=0;j<this.matrice.length;j++){
 
 		if(this.matrice[i][j]!=false){
 		this.matrice[i][j].setX(i);
