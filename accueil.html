@@ -1,0 +1,51 @@
+<script>
+
+$(".btn").click(function(){
+
+
+
+        $('#contenaire').load($(this).attr("value")+".html");
+
+
+
+      });
+</script>
+      <div class="jumbotron">
+        <h1>Animation d'automates</h1>
+        <p class="lead">Bonjour, cette application est conçu pour vous afin de vous aider à dessiner proprement votre automate à partir d'un document text respectant une structure bien definie, de même vous pouvez tester la reconaissance de mots et ceci avec une jolie animation.</p>
+        <p><a class="btn btn-lg btn-success" href="#" role="button">voir une démonstration</a></p>
+      </div>
+
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-lg-4">
+          <h2>Démonstration</h2>
+          <p>Vous pouvez lancer une démonstration en chargeant un fichier text respectant la syntaxe qui se trouve dans l'onglet Syntaxe</p>
+          <p>Après avoir chargé le fichier et si la syntaxe est juste vous allez voir apparaitre le dessin d'un automate que vous pourrez manipuler à la suite.</p>
+          <p><a  value="automate/index" class="btn btn-primary" href="#" role="button">&nbsp;&nbsp;Démo &raquo;</a></p>
+        </div>
+        
+        <div class="col-lg-4">
+          <h2>Syntaxe</h2>
+          <p>Afin que votre votre fichier soit compilable, il faut respecter la syntaxe requise et ceci en indiquant les elements suivants : </p>
+          <p>
+            <ul>
+              <li>le nombre d'états</li>
+              <li>la liste des etiquettes</li>
+              <li>l'état d'entrée</li>
+              <li>l'état de sortie</li>
+              <li>la liste des transitions</li>
+            </ul>
+          </p>
+
+          
+          <p></p>
+          <p><a class="nav btn btn-primary" value="syntaxe" href="#" role="button">Syntaxe &raquo;</a></p>
+       </div>
+        <div class="col-lg-4">
+          <h2>Création</h2>
+          <p>Cette application vous offre la possibilité de saisir votre fichier texte directement sur la plateforme de même vous pouvez l'enregistrer sur votre machine.</p>
+          <p><a class="btn btn-primary" value="creation" href="#" role="button">View details &raquo;</a></p>
+        </div>
+      </div>
+
