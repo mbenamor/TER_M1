@@ -9,8 +9,11 @@ function Transition(i,e,f){
 	this.clicked=false;
 	this.qx=null;
 	this.qy=null;
-	
-	this.texte=null;	
+	this.x=0;
+	this.y=0;
+	this.animation=null;
+	this.texte=null;
+	this.arc=null;	
 	
 
 	this.test=document.createElementNS("http://www.w3.org/2000/svg","path");
@@ -19,11 +22,41 @@ function Transition(i,e,f){
 	this.test.setAttribute("stroke","transparent");
 	
 	
+	this.getEtatDe=function(){
+		
+		return this.automate.getEtat(this.de);
+		
+	};
+
+	this.getEtatA=function(){
+
+		return this.automate.getEtat(this.a);
+
+	};
+	this.getX=function(){
+
+		return this.x
+	};
 	
+	this.getY=function(){
+
+		return this.y
+	};
 	// c'est l'element dans le dom dans lequel 
 	// la transition sera dessinée
 	this.el=null;
 
+	this.getId=function(){
+
+		return this.de+"-"+this.a;
+
+	};
+
+	this.getPath=function(){
+
+		return this.path;
+
+	};
 		
 	this.setColor=function(color){
 
@@ -40,6 +73,55 @@ function Transition(i,e,f){
 			};
 
 
+
+this.createAnimation=function(deb){
+
+
+
+
+
+
+
+var path=this.getPath();
+var d=path.getAttribute("d");
+
+    var cercle=document.createElementNS("http://www.w3.org/2000/svg","circle");
+	cercle.setAttribute("cx","0");
+	cercle.setAttribute("cx","0");
+	cercle.setAttribute("r","15");
+	cercle.setAttribute("fill","blue");
+	cercle.setAttribute("stroke-width","1");
+    cercle.setAttribute("stroke","black");
+
+
+
+
+var anim=document.createElementNS("http://www.w3.org/2000/svg","animateMotion");
+	anim.setAttribute("path",d);
+	
+	anim.setAttribute("id",this.getId());
+	anim.setAttribute("dur","3s");
+	//anim.setAttribute("rotate","auto");
+	anim.setAttribute("start",deb)
+	anim.setAttribute("repeatCount","1");
+	this.animation=anim;
+	
+	cercle.appendChild(anim);
+
+
+this.el.appendChild(cercle);
+$("#"+this.getId()).attr("begin",deb);
+
+//anim.setAttribute("begin",deb);
+
+
+
+
+};
+
+this.getEl=function(){
+	return this.el;
+};
 
 this.getEtiquette=function(){
 
@@ -80,7 +162,7 @@ this.automate=aut;
 
 this.redessinerTrans=function(){
 console.log("redessinerTrans");
-
+if(this.de==this.a) return;
 var xdep=this.automate.getEtat(this.de).getX();
 var ydep=this.automate.getEtat(this.de).getY();
 var xarr=this.automate.getEtat(this.a).getX();
@@ -93,8 +175,8 @@ this.test.setAttribute("d","M "+xdep+" "+ydep+" T "+this.qx+" "+this.qy);
 
 
 var dist2=Math.sqrt(Math.pow((xdep-this.qx),2)+Math.pow((ydep-this.qy),2));
-xdep=this.test.getPointAtLength(40).x;
-ydep=this.test.getPointAtLength(40).y;
+xdep=this.test.getPointAtLength(50).x;
+ydep=this.test.getPointAtLength(50).y;
 //xarr=this.test.getPointAtLength(dist-55).x;
 //yarr=this.test.getPointAtLength(dist-55).y;
 
@@ -103,18 +185,22 @@ ydep=this.test.getPointAtLength(40).y;
 
 this.test.setAttribute("d","M "+this.qx+" "+this.qy+" T "+xarr+" "+yarr);
 var dist1=Math.sqrt(Math.pow((xarr-this.qx),2)+Math.pow((yarr-this.qy),2));
-xarr=this.test.getPointAtLength(dist1-55).x;
-yarr=this.test.getPointAtLength(dist1-55).y;
+xarr=this.test.getPointAtLength(dist1-60).x;
+yarr=this.test.getPointAtLength(dist1-60).y;
 
 
 
 //var dist=Math.sqrt(Math.pow((xarr-xdep),2)+Math.pow((yarr-ydep),2));
 
 var dist=dist1+dist2;
-
-var d="M "+xdep+" "+ydep+" Q "+this.qx+" "+this.qy+" "+xarr+" "+yarr;
+if(this.de==this.a)
+	 d="M"+(xdep+18)+","+(ydep-35)+" a-25,50 -10 0,1 50,-15 ";
+else d="M "+xdep+" "+ydep+" Q "+this.qx+" "+this.qy+" "+xarr+" "+yarr;
+this.x=xdep;
+this.y=ydep;
 this.path.setAttribute("d",d);
-var centre=this.path.getPointAtLength((dist-90)/2);
+var centre=this.path.getPointAtLength(this.path.getTotalLength()/2);
+
 this.texte.setAttribute("x",centre.x);
 this.texte.setAttribute("y",centre.y);
 
@@ -126,28 +212,43 @@ this.texte.setAttribute("y",centre.y);
 this.courber=function(e1,e2,dist){
 
 
-if(!e1.memeLigne(e2)){
-			
+if(e1.memeLigne(e2)){
+	
 			
 			// pour savoir si on va courber la transition horizontalement ou verticalement
 			
-						if(e1.auDessus(e2))
-							this.qy-=dist/4;
-						else 
-							this.qy+=dist/4;
+						if(e1.aGauche(e2)){
+							this.qy-=dist/6;
+				
+						}
+							
+						else{
+							this.qy+=dist/6;
+					
+
+						} 
+							
 
 
 }else{
 
 			
 			
-			if(e1.aGauche(e2))
+			if(e1.auDessus(e2))
+			{
+				
+				this.qx+=dist/6;	
+			}
+				
 			
-				this.qx+=dist/4;
+			else{
+
+				
+				this.qx-=dist/6;
+				
+				}
 			
-			else
-			
-                 this.qx-=dist/4;
+                 
 			
 		}
 
@@ -163,7 +264,7 @@ var ydep=this.automate.getEtat(this.de).getY();
 
 var xarr=this.automate.getEtat(this.a).getX();
 var yarr=this.automate.getEtat(this.a).getY();
-	
+
 
 var dist=Math.sqrt(Math.pow((xarr-xdep),2)+Math.pow((yarr-ydep),2));
 
@@ -174,15 +275,35 @@ ydep=this.test.getPointAtLength(40).y;
 xarr=this.test.getPointAtLength(dist-55).x;
 yarr=this.test.getPointAtLength(dist-55).y;
 
-
-
-
-
-
-
-
-
 if(this.de==this.a){
+
+
+	this.qx=xdep-200;
+	this.qy=ydep;
+/*
+	var point=this.test.getPointAtLength(200);
+
+    var ellipse=document.createElementNS("http://www.w3.org/2000/svg","ellipse");
+	ellipse.setAttribute("cx",xdep-50);
+	ellipse.setAttribute("cy",ydep);
+	ellipse.setAttribute("rx","60");
+	ellipse.setAttribute("ry","30");
+
+	ellipse.setAttribute("style","fill:none;stroke:blue;stroke-width:5;");
+
+	this.el.appendChild(ellipse);
+
+var p;
+
+var d="M"+(xdep-25)+","+(ydep-35)+" a-25,50 -10 0,1 50,-15 ";
+this.arc=document.createElementNS("http://www.w3.org/2000/svg","path");
+this.arc.setAttribute("d",d);
+this.arc.setAttribute("stroke-width","5");
+this.arc.setAttribute("fill","none");
+this.arc.setAttribute("stroke","blue");
+this.arc.setAttribute("marker-end","url(#Triangle)");
+this.el.appendChild(this.arc);
+*/
 
 
 	this.qx=xdep-200;
@@ -208,7 +329,7 @@ this.qy=(ydep+yarr)/2;
 
 
 var e1=this.automate.getEtat(this.de);
-var e2=this.automate.getEtat(this.a)
+var e2=this.automate.getEtat(this.a);
 
 
 
@@ -229,6 +350,7 @@ else{
 	
 	else{
 
+		
 		this.path.setAttribute("stroke","blue");	
 
 
@@ -244,22 +366,19 @@ else{
 
 
 
-var d="M "+xdep+" "+ydep+" Q "+this.qx+" "+this.qy+" "+xarr+" "+yarr;
+var d;
+
+if(this.de==this.a)
+ d="M"+(xdep-30)+","+(ydep-35)+" a-25,50 -10 0,1 50,-15 ";
+else d="M "+xdep+" "+ydep+" Q "+this.qx+" "+this.qy+" "+xarr+" "+yarr;
 
 this.path.setAttribute("d",d);
 
 var xetiquette,yetiquette;
-if(this.de==this.a){
+var centre=this.path.getPointAtLength(this.path.getTotalLength()/2);
+xetiquette=centre.x;
+yetiquette=centre.y;
 
-	xetiquette=this.qx+70;
-	yetiquette=this.qy;
-
-	}else{
-var centre=this.path.getPointAtLength((dist-60)/2);
- xetiquette=centre.x;
- yetiquette=centre.y;
-
-}
 this.texte.setAttribute("x",xetiquette);
 this.texte.setAttribute("y",yetiquette);
 // redessiner les path entrants
@@ -275,6 +394,7 @@ this.path=document.createElementNS("http://www.w3.org/2000/svg","path");
 this.path.setAttribute("stroke-width","5");
 this.path.setAttribute("fill","none");
 this.path.setAttribute("marker-end","url(#Triangle)");
+this.path.setAttribute("marker-start","url(#cercle)");
 this.path.setAttribute("stroke","blue");
 this.path.setAttribute("id",id);
 this.el.appendChild(this.path);
@@ -341,6 +461,7 @@ $(this.path).on("mousedown",function(){
 
 this.setQ=function(x,y){
 
+
 	this.qx=x;
 	this.qy=y;
 };
@@ -367,4 +488,5 @@ return this.clicked;
 
 
 }
+
 
