@@ -1,0 +1,308 @@
+
+    
+
+    
+    <script src="automate/automate.js"></script>
+    <script src="automate/transition.js"></script>
+    <script src="etat.js"></script>
+    <script src="automate/matrice.js"></script>
+    <script src="automate/animation.js"></script>
+    <script>
+      
+      
+      var t,e,f,aut,ini;
+      var svg;
+      
+      
+ 
+ 
+        
+       // $("#play").hide();
+       // $("#stop").hide();
+
+       // $("#textarea").hide();
+        svg=$("#svg")[0];
+
+
+
+          
+       
+          t=[]; //les transations
+
+        et=[];// les etiquettes
+
+        f=[];// les etats finaux
+          
+        ini=[];//les etats initiaux
+
+
+
+        var fileInput = document.getElementById('fileInput');
+        var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+        fileInput.addEventListener('change', function(e) {
+
+        var file = fileInput.files[0];
+        var textType = /text.*/;
+
+      if (file.type.match(textType)) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+           
+
+
+           var result=reader.result.split("\n");
+
+            var i;
+            var etiquettes=result[1].split(",");
+
+            // les etiquettes
+            
+            for(i=0;i<etiquettes.length;i++){
+              et.push(etiquettes[i]);
+              
+              
+            }
+
+            
+            for(i=4;i<result.length;i++)
+              {
+                
+                var tran=result[i].split("=>");
+                  if(tran.length==3)
+                t.push(new Transition(parseInt(tran[0]),tran[1], parseInt(tran[2]) ));                
+
+
+
+              }           
+
+
+              // les etats puits
+              var etatPuis=result[3].split(",");
+              for(i=0;i<etatPuis.length;i++)
+                
+                  {
+
+                    
+                f.push(etatPuis[i]);
+
+                  }
+
+              // les etats initiaux
+              var etatini=result[2].split(",");
+              for(i=0;i<etatini.length;i++)
+                ini.push(etatini[i]);
+
+
+               aut=new Automate(parseInt(result[0]),et,f,ini,t,svg);
+               aut.initialiser();
+    
+
+        }
+
+        reader.readAsText(file);  
+      } else {
+        fileDisplayArea.innerText = "File not supported!";
+      }
+    });
+
+
+
+
+
+
+
+/*
+            
+        $("#telsvg").click(function(){
+
+          aut.telecharger();
+        });  
+        
+        $("#play").click(function(){
+
+          aut.animer2();
+
+        });
+
+        $("#stop").click(function(){
+
+          aut.pause();
+
+        });
+
+        $("textarea").keydown(function(e){
+                    
+                     if (e.keyCode == 13 && !e.shiftKey)
+                         {
+                  e.preventDefault();
+                        
+
+                  
+                
+                        aut.reconaissance($("#textarea").val());
+
+                        $("textarea")[0].value="";
+                       }
+
+
+
+                      
+        });  
+
+
+
+           $('#defaultslide').slider({ 
+            max: 100,
+            min: 5,
+            value: 100,
+            slide: function(e,ui) {
+              
+
+              $('#currentval').html(ui.value);
+              aut.vitesse(ui.value);
+            
+
+            }
+            });
+  
+
+
+*/
+  
+    
+    </script>
+
+
+
+
+
+
+
+   <script>
+
+    
+      $("#reconnu").hide(); 
+      $("#pasReconnu").hide();
+      
+      $("#fichier").click(function(){
+
+
+        $("#fileInput").trigger('click');
+
+
+      });
+
+
+   
+   </script>
+
+
+
+
+<div id="gauche">
+  <div id="page-wrapper">
+
+
+  </div>
+
+  <ul>
+
+  </div>
+
+
+  <div >
+          <ul  class="nav nav-sidebar">
+      
+          
+            <li><a href="#" id="telsvg">telecharger le fichier SVG </a></li>
+            <li><a href="test.txt" download>telecharger un exemple de fichier test</a></li>
+            <li><a href="source.zip" download>telecharger le code source</a></li>
+            <li><textarea id="textarea"  rows="4"; ></textarea></li>
+       
+
+          </ul>
+        
+
+          <ul  class="nav nav-sidebar">
+      
+           <li id="play" class="glyphicon glyphicon-play" />Lancer l'animation courante :)</li>
+           <li id="stop" class="glyphicon glyphicon-pause">Stoppler l'animation :)</li>
+          </ul>
+
+         
+        
+
+          <div id="content">
+     
+        
+      <div id="defaultval">
+        vitesse <span id="currentval">100 %</span>
+      </div>
+      
+      <div id="defaultslide"></div>
+      
+     
+     
+    </div><!-- @end #content -->
+
+
+        </div>
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <input type="file" id="fileInput" style="visibility:hidden;position:absolute;top:0;left:0">
+    <ol class="breadcrumb">
+  <li><a id="fichier" href="#">charger d'un fichier</a></li>
+  <li><a href="#">play</a></li>
+  <li class="active">pause</li>
+</ol>
+
+
+    <div id="reconnu" class="alert alert-success" role="alert">Le mot a été reconnu</div>
+    <div id="pasReconnu" class="alert alert-info" role="alert">Le mot n'a pas été reconnu</div>
+    <div class="container-fluid">
+    
+    
+      
+
+     <div id="droite">
+			
+		
+		<svg  id="svg" height="800" width="1000"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+		 <rect x="0" y="0" width="1000" height="800" fill="thistle" id="bpard" />
+		<defs id="definition">
+    <marker id="Triangle"
+      viewBox="0 0 10 10" refX="0" refY="5" 
+      markerUnits="strokeWidth"
+      markerWidth="4" markerHeight="3"
+      orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    </defs>
+		
+		</svg>
+
+	</div>
+    </div>
+<div id="texte"></div>
+
