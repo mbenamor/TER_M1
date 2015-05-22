@@ -1,0 +1,61 @@
+  <script>
+
+  $("#info").hide();
+  $("#bout").click(function(){
+  		$("#info").show();
+ 
+  });
+
+
+  $("#btn1").click(function(){
+
+
+	var str=$("#textarea").val().trim();
+		
+		while(str.indexOf("&gt;")>-1)
+			str=str.replace("&gt;",">");
+			
+
+		    $("#contenu").load("automate/index.html",function(){
+
+
+		    	traitement(str);
+		    });
+		    
+});
+
+
+$("#btn2").click(function(){
+    
+    	
+				
+			
+				var str=$("#textarea").val().trim();
+			
+			while(str.indexOf("\n")>-1)
+       str=str.replace("\n","\r\b");
+
+      while(str.indexOf("\b")>-1)
+       str=str.replace("\b","\n");
+			
+      $(this).attr("href",'data:svg/plain;charset=utf-8,'+encodeURIComponent(str)).attr("download","fichier.txt");
+  				
+					 
+
+
+    
+});
+
+
+  </script>
+  <div id="contenu">
+  <div class="jumbotron">
+  	<h2>Créez votre animation</h2> <div id="bout" class="glyphicon glyphicon-chevron-down"></div>
+  	<div id="info">Pour plus d'information regarder les exemples dans l'onglet Syntaxe</div>
+  <textarea class="form-control" rows="15" cols="20" style="resize:none;" id="textarea"></textarea>
+  <br>
+  <p><a value="exemple1" id="btn1"  class="btn btn-primary btn-lg" href="#" role="button">Lancer</a></p>
+  <p><a id="btn2" class="btn btn-primary btn-lg" href="#" role="button">Telecharger le fichier</a></p>
+  
+</div>
+</div>
