@@ -4,6 +4,7 @@ function Etat(n,aut){
 this.num=n;
 this.trans=[];
 this.cercle=null;
+this.cercle2=null;
 this.x=0;
 this.y=0;
 this.ligne=0;
@@ -21,6 +22,33 @@ this.fin=false;
 this.el=null;
 
 
+
+this.clignoter=function(){
+
+
+this.cercle.setAttribute("fill","yellow");
+u=this;
+
+setTimeout(function(){
+
+u.getCercle().setAttribute("fill","red");
+
+
+},500);
+
+};
+
+
+this.getCercle=function(){
+
+	return this.cercle;
+
+};
+
+this.getCercle2=function(){
+	return this.cercle2;
+};
+
 this.estInitial=function(){
 
 	return this.ini;
@@ -33,7 +61,6 @@ this.estFinal=function(){
 
 
 this.isInitial=function(){
-
 	this.ini=true;
 };
 
@@ -87,27 +114,47 @@ this.tester=function(){
 };
 
 
+this.ecart=function(e){
 
+return Math.abs(this.num-e.getNum)-1;
+
+};
 
 this.dessiner=function(){
 	
 	//for(var i=0;i<this.trans.length;i++)
 	//	this.trans[i].dessiner();
 		
-		
+		//this.x=i*300+150;
+		//this.y=c*200+100;
+		this.x=this.colonne*300+200;
+		this.y=this.ligne*200+100;
 		this.cercle=document.createElementNS("http://www.w3.org/2000/svg","circle");
-		this.cercle.setAttribute("stroke-width","3");
+	    this.cercle.setAttribute("stroke-width","3");
 		this.cercle.setAttribute("cx",this.x);
 		this.cercle.setAttribute("cy",this.y);
-		this.cercle.setAttribute("fill","red");
+		
+		if(this.ini)
+			 this.cercle.setAttribute("fill","white");
+		else this.cercle.setAttribute("fill","red");
+		
 		this.cercle.setAttribute("stroke","black");
 		this.cercle.setAttribute("r","40");
-	
-
-
-
+		this.cercle.setAttribute("filter","url(#dropShadow)");
+		
+		if(this.fin){
+		this.cercle2=document.createElementNS("http://www.w3.org/2000/svg","circle");
+		this.cercle2.setAttribute("stroke-width","3");
+		this.cercle2.setAttribute("cx",this.x);
+		this.cercle2.setAttribute("cy",this.y);
+		this.cercle2.setAttribute("fill","red");
+		this.cercle2.setAttribute("stroke","black");
+		this.cercle2.setAttribute("r","35");
+	}
 		this.g=document.createElementNS("http://www.w3.org/2000/svg","g");
 		this.g.appendChild(this.cercle);
+		if(this.fin)
+		this.g.appendChild(this.cercle2);
 
 		this.texte=document.createElementNS("http://www.w3.org/2000/svg","text");
 	var textNode = document.createTextNode(this.num);
@@ -182,14 +229,15 @@ this.isClicked=function(){
 this.setX=function(i){
 
 this.ligne=i;
-this.x=i*300+150;
+//this.x=i*300+150;
 
 };
 
 this.setY=function(c){
 
 this.colonne=c;
-this.y=c*200+100;
+
+//this.y=c*200+100;
 };
 
 this.setCord=function(xcor,ycor){
@@ -198,6 +246,11 @@ this.setCord=function(xcor,ycor){
 	this.y=ycor;
 	this.cercle.setAttribute("cx",this.x);
 	this.cercle.setAttribute("cy",this.y);
+	
+	if(this.fin){
+	this.cercle2.setAttribute("cx",this.x);
+	this.cercle2.setAttribute("cy",this.y);
+	}
 	this.texte.setAttribute("x",this.x);
 	this.texte.setAttribute("y",this.y+20);
 };
@@ -239,10 +292,12 @@ return ((this.ligne==e.getLigne())||(this.colonne==e.getColonne()))  ;
 
 
 this.lienDirect=function(e){
-
 // si les deux etats ne sont pas sur le meme axe donc pas de problem
 
-if(this.surMemeAxe(e)==false) return true;
+if(this.surMemeAxe(e)==false){
+
+return true;
+} 
 
 // si c'est sur le meme axe il faut pas qu'il y ait un etat qui gene la transition sinon il faut courber la transition
 
@@ -251,14 +306,15 @@ if(this.memeLigne(e)){
 
 // s'ils se trouve sur la meme colonne
 
-
-	return this.getAutomate().getMatrice().verifColonne(this.ligne,this.colonne,e.getColonne());
+	return  this.getAutomate().getMatrice().verifLigne(this.ligne,this.colonne,e.getColonne());
+	
 
 }else{
 
-// s'ils se trouvent sur la meme ligne
 
-  return  this.getAutomate().getMatrice().verifLigne(this.colonne,this.ligne,e.getLigne());
+// s'ils se trouvent sur la meme ligne
+return this.getAutomate().getMatrice().verifColonne(this.colonne,this.ligne,e.getLigne());
+  
 
 }
 
@@ -317,7 +373,8 @@ this.reconnaitre=function(mot,tab,ind){
 
 
 
-
+$("#reconnu").hide();
+$("#pasReconnu").hide();
 
 
 if(ind==mot.length){
@@ -326,16 +383,14 @@ if(ind==mot.length){
 	if(this.estFinal()){
 
 		
-		alert("ce mot est reconnu");
+		$("#reconnu").show();
 		this.getAutomate().animation(tab,mot);
 
 
 	}else{
 
 
-		// le mot est bon mais il finit pas à l'etat final
-		alert("le mot est bon mais il finit pas à l'etat final");
-
+		$("#pasReconnu").show();
 	}
 
 
@@ -370,6 +425,7 @@ if(ind==mot.length){
 };
 
 }
+
 
 
 
