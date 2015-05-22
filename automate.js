@@ -32,13 +32,16 @@ this.m=new Matrice();
 this.initialiser=function(){
 
 
+//$("#svg").attr("height","10000");
 
+//var element =this.svg;
 
-var element =this.svg;
-
-  
+var element=document.getElementById("svg");
  
  
+
+/*
+
  if (element.offsetParent !== undefined) {
 		do {
 			this.offsetX += element.offsetLeft;
@@ -46,9 +49,10 @@ var element =this.svg;
 		} while ((element = element.offsetParent));
 	}
   
- 
+ */
 
-
+this.offsetX += $(element).offset().left;
+this.offsetY += $(element).offset().top;
 
 var defs=document.getElementById("definition");
 
@@ -58,10 +62,14 @@ this.m.creerMatrice(this.n);
 
 var i;
 var u=this;
+var g=document.getElementById("ctn");
+
 for(i=0;i<this.n;i++){
 	
 	var e=new Etat(i,u);
-	    e.addEl(this.svg);	
+	    
+	   // e.addEl(this.svg);	
+	    e.addEl(g);
 	    this.etats[i]=e;
 
 	
@@ -71,7 +79,9 @@ for( i=0;i<t.length;i++)
 			{
 	
 	 t[i].addAutomate(u);
-	 t[i].addEl(this.svg);
+	 
+	 //t[i].addEl(this.svg);
+	 t[i].addEl(g);
 	 this.etats[t[i].getDe()].ajouterTransition(t[i]);
 	
 	
@@ -82,17 +92,6 @@ for( i=0;i<t.length;i++)
 	}
 	
 	
-	// placer les etats dans la matrice
-	this.m.placer(this.etats);
-	this.dessinerTrans();
-	this.m.dessiner();
-	this.redessinerTrans();    
-
-	$("#textarea").show();
-
-
-
-
 	var indice;
 	
 	//alert("nb ini+"this.initiaux.length);
@@ -119,6 +118,19 @@ for( i=0;i<t.length;i++)
 		
 		
 	}
+	
+	// placer les etats dans la matrice
+	this.m.placer(this.etats);
+	this.dessinerTrans();
+	this.m.dessiner();
+	this.redessinerTrans();    
+
+	$("#textarea").show();
+
+
+
+
+	
 };
 
 
@@ -190,22 +202,25 @@ this.getOffsetY=function(){
 
 
 this.telecharger=function(){
-
-					
-				var texte=$('#droite').html();
-
+			
 				
+				var texte=$('#droite').html();
+				$("#texte").html(texte);
+				return texte;
+				
+				/*
 				var pom = document.createElement("a");
   						
 
-
+				
   				 var textNode = document.createTextNode("telecharger le fichier SVG");
-  					 
+  			 
   					 pom.setAttribute('href', 'data:svg/plain;charset=utf-8,' + encodeURIComponent(texte));
   					 pom.setAttribute('download', "automate.svg");
-					pom.click();
-
-
+					 
+					 pom.click();
+					*/
+					
 };
 
 this.reconaissance=function(t){
@@ -222,7 +237,7 @@ this.animation=function(tab,mot){
 
 	this.animations.push(new Animation(tab,mot));
 	
-	
+	$("#play").show();
 	
 	$("#ul").append("<li><a href='#'>lancer l'animation "+this.animations.length+"</a></li>");
 
@@ -241,10 +256,36 @@ this.animation=function(tab,mot){
 
 this.animer=function(ind){
 
-	this.animations[parseInt(ind)].animer(0);
+	this.animations[parseInt(ind)].animer();
+};
+
+this.animer2=function(){
+this.animations[this.animations.length-1].play();
+this.animations[this.animations.length-1].animer();
+$("#play").hide();
+$("#stop").show();
+
+};
+
+
+
+
+ this.pause=function(){
+
+ 	this.animations[this.animations.length-1].pause();
+ 	$("#play").show();
+	$("#stop").hide();
+ };
+
+this.vitesse=function(v){
+
+console.log(100-parseInt(v));
+this.animations[this.animations.length-1].vitesse(100-parseInt(v));
+
 };
 
 }
+
 
 
 
