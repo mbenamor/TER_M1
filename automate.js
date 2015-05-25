@@ -17,7 +17,139 @@ this.animations=[];
 this.offsetX=0;
 this.offsetY=0;
 
+this.colorState="red";
+this.colorTransition="blue";
+this.colorAnimation="yellow";
+this.colorIndice="black";
+this.colorEtiquette="black";
 
+this.colorToChange=0;
+
+
+this.getColorToChange=function(){
+
+	return this.colorToChange;
+};
+
+this.setColorToChange=function(c){
+
+	this.colorToChange=c;
+};
+
+this.getColorState=function(){
+ return this.colorState;
+};
+
+this.setColorState=function(c){
+
+	this.colorState=c;
+};
+
+this.getColorTransition=function(){
+
+ return this.colorTransition;
+};
+
+this.setColorTransition=function(c){
+	this.colorTransition=c;
+};
+
+this.getColorAnimation=function(){
+	return this.colorAnimation;
+};
+
+this.setColorAnimation=function(c){
+	this.colorAnimation=c;
+};
+
+this.getColorIndice=function(){
+	return this.colorIndice;
+};
+
+this.setColorIndice=function(c){
+	this.colorIndice=c;
+};
+
+this.getColorEtiquette=function(){
+
+	return this.colorEtiquette;
+};
+
+this.setColorEtiquette=function(c){
+
+	this.colorEtiquette=c;
+};
+
+
+this.colorerEtats=function(c){
+
+	this.setColorState(c);
+	for(i=0;i<this.etats.length;i++){
+
+		this.etats[i].setColor(c);
+
+	}
+
+};
+
+this.colorerTransitions=function(c){
+
+	this.setColorTransition(c);
+	for(i=0;i<this.trans.length;i++){
+
+		this.trans[i].setColor(c);
+	}
+};
+
+this.colorerEtiquettes=function(c){
+
+	this.setColorEtiquette(c);
+	for(i=0;i<this.trans.length;i++){
+
+		this.trans[i].setColorEtiquette(c);
+	}
+};
+
+this.colorerIndices=function(c){
+
+this.setColorIndice(c);
+	for(i=0;i<this.etats.length;i++){
+
+		this.etats[i].setColorIndice(c);
+
+	}
+
+};
+
+this.colorerAnimation=function(c){
+
+	this.setColorAnimation(c);
+
+};
+
+
+this.modifyColor=function(c){
+
+
+var i=this.getColorToChange();
+
+switch(i){
+
+
+	case 0 : {this.colorerEtats(c);break;}
+
+	case 1 : {this.colorerTransitions(c);break;}
+
+	case 2 : {this.colorerIndices(c);break;}
+
+	case 3 : {this.colorerEtiquettes(c);break;}
+
+	case 4 : {this.colorerAnimation(c);break;}
+
+
+}
+
+};
 
 // c'est la matrice qui va contenir tous mes etats
 this.m=new Matrice();
@@ -93,8 +225,7 @@ for( i=0;i<t.length;i++)
 	
 	
 	var indice;
-	
-	//alert("nb ini+"this.initiaux.length);
+
 	
 	for(i=0;i<this.initiaux.length;i++){
 		
@@ -208,18 +339,16 @@ this.telecharger=function(){
 				$("#texte").html(texte);
 				return texte;
 				
-				/*
-				var pom = document.createElement("a");
-  						
+					
+};
 
+this.telecharger2=function(){
+			
 				
-  				 var textNode = document.createTextNode("telecharger le fichier SVG");
-  			 
-  					 pom.setAttribute('href', 'data:svg/plain;charset=utf-8,' + encodeURIComponent(texte));
-  					 pom.setAttribute('download', "automate.svg");
-					 
-					 pom.click();
-					*/
+				var texte=$('#svg').html();
+				$("#texte").html(texte);
+				return "<svg>"+texte+"</svg>";
+				
 					
 };
 
@@ -235,11 +364,12 @@ for(i=0;i<this.initiaux.length;i++)
 
 this.animation=function(tab,mot){
 
-	this.animations.push(new Animation(tab,mot));
+	u=this;
+	this.animations.push(new Animation(tab,mot,u));
 	
 	$("#play").show();
 	
-	$("#ul").append("<li><a href='#'>lancer l'animation "+this.animations.length+"</a></li>");
+	$("#ul").wrap("<li><a href='#'>lancer l'animation "+this.animations.length+"</a></li>");
 
 
 	var u=this;
