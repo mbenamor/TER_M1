@@ -16,6 +16,33 @@ function Transition(i,e,f){
 	this.arc=null;	
 	
 
+	this.getColor=function(){
+
+		return this.automate.getColorTransition();
+	};
+
+	this.getColorEtiquette=function(){
+
+		return this.automate.getColorEtiquette();
+	};
+
+	this.setColor=function(c){
+
+		this.path.setAttribute("fill",c);
+
+	};
+
+	this.setColorEtiquette=function(c){
+
+		this.texte.setAttribute("fill",c);
+	};
+
+	this.getLength=function(){
+
+		return this.path.getTotalLength();
+
+	};
+
 	this.test=document.createElementNS("http://www.w3.org/2000/svg","path");
     this.test.setAttribute("d","M 20 230  T 90 230");
 	this.test.setAttribute("fill","none");
@@ -89,7 +116,7 @@ var d=path.getAttribute("d");
 	cercle.setAttribute("cx","0");
 	cercle.setAttribute("cx","0");
 	cercle.setAttribute("r","15");
-	cercle.setAttribute("fill","blue");
+	cercle.setAttribute("fill",this.getColor());
 	cercle.setAttribute("stroke-width","1");
     cercle.setAttribute("stroke","black");
 
@@ -101,7 +128,6 @@ var anim=document.createElementNS("http://www.w3.org/2000/svg","animateMotion");
 	
 	anim.setAttribute("id",this.getId());
 	anim.setAttribute("dur","3s");
-	//anim.setAttribute("rotate","auto");
 	anim.setAttribute("start",deb)
 	anim.setAttribute("repeatCount","1");
 	this.animation=anim;
@@ -280,30 +306,6 @@ if(this.de==this.a){
 
 	this.qx=xdep-200;
 	this.qy=ydep;
-/*
-	var point=this.test.getPointAtLength(200);
-
-    var ellipse=document.createElementNS("http://www.w3.org/2000/svg","ellipse");
-	ellipse.setAttribute("cx",xdep-50);
-	ellipse.setAttribute("cy",ydep);
-	ellipse.setAttribute("rx","60");
-	ellipse.setAttribute("ry","30");
-
-	ellipse.setAttribute("style","fill:none;stroke:blue;stroke-width:5;");
-
-	this.el.appendChild(ellipse);
-
-var p;
-
-var d="M"+(xdep-25)+","+(ydep-35)+" a-25,50 -10 0,1 50,-15 ";
-this.arc=document.createElementNS("http://www.w3.org/2000/svg","path");
-this.arc.setAttribute("d",d);
-this.arc.setAttribute("stroke-width","5");
-this.arc.setAttribute("fill","none");
-this.arc.setAttribute("stroke","blue");
-this.arc.setAttribute("marker-end","url(#Triangle)");
-this.el.appendChild(this.arc);
-*/
 
 
 	this.qx=xdep-200;
@@ -340,18 +342,18 @@ if(e1.existeTransation(e2)){
 }
 else{
 if(e1.surMemeAxe(e2)==false)
-this.path.setAttribute("stroke","blue");
+this.path.setAttribute("stroke",this.getColor());
 
 else{ 
 
 	if(e1.lienDirect(e2))
 
-		this.path.setAttribute("stroke","blue");
+		this.path.setAttribute("stroke",this.getColor());
 	
 	else{
 
 		
-		this.path.setAttribute("stroke","blue");	
+		this.path.setAttribute("stroke",this.getColor());	
 
 
 		this.courber(e1,e2,dist);
@@ -395,7 +397,7 @@ this.path.setAttribute("stroke-width","5");
 this.path.setAttribute("fill","none");
 this.path.setAttribute("marker-end","url(#Triangle)");
 this.path.setAttribute("marker-start","url(#cercle)");
-this.path.setAttribute("stroke","blue");
+this.path.setAttribute("stroke",this.getColor());
 this.path.setAttribute("id",id);
 this.el.appendChild(this.path);
 
@@ -418,7 +420,7 @@ this.texte=text;
 text.setAttribute("x","-1");
 text.setAttribute("class","id");
 text.setAttribute("y","-1");
-text.setAttribute("fill","black");
+text.setAttribute("fill",this.getColorEtiquette());
 var textNode = document.createTextNode(this.etiquette);
 text.appendChild(textNode);
 this.el.appendChild(text);
