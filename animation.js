@@ -1,6 +1,7 @@
 
-function Animation(t,m){
+function Animation(t,m,aut){
 
+    this.automate=aut;
 	this.tab=t;
 	this.mot=m;
     this.anime=true;
@@ -9,9 +10,28 @@ function Animation(t,m){
     this.animateMotion1=null;
     this.cercle=creerCercle();
     this.vit=0;
-    
+    this.elem=t[0].getEl();
     t[0].getEl().appendChild(this.cercle);
+    this.getAutomate=function(){
+        return this.automate;
+    };
+    this.mettreAJour=function(){
+
+
+    this.tab=t;
+    this.mot=m;
+    this.anime=true;
+    this.ind=parseInt(0);
+    this.animateMotion=null;
+    this.animateMotion1=null;
+    this.cercle=creerCercle();
+    this.vit=0;
     
+    this.elem.appendChild(this.cercle);
+    $("#stop").hide();
+    $("#play").show();
+    
+    };
 
     this.vitesse=function(v){
 
@@ -59,30 +79,30 @@ function Animation(t,m){
 
             if (u.getTab()[u.getIndex()].getEtatDe().estInitial())
                 u.getTab()[u.getIndex()].getEtatDe().getCercle().setAttribute("fill","white");
-            else u.getTab()[u.getIndex()].getEtatDe().getCercle().setAttribute("fill","red");
-            u.getTab()[u.getIndex()].getEtatA().getCercle().setAttribute("fill","yellow");
+            else u.getTab()[u.getIndex()].getEtatDe().getCercle().setAttribute("fill",u.getAutomate().getColorState());
+            u.getTab()[u.getIndex()].getEtatA().getCercle().setAttribute("fill",u.getAutomate().getColorAnimation());
 
             if (u.getTab()[u.getIndex()].getEtatA().estFinal())
-                u.getTab()[u.getIndex()].getEtatA().getCercle2().setAttribute("fill","yellow");
-          //  u[this.ind].getEtatA().getCercle().setAttribute("fill","yellow");
+                u.getTab()[u.getIndex()].getEtatA().getCercle2().setAttribute("fill",u.getAutomate().getColorAnimation());
+          
 
 
     		u.incrementIndex();
     		if(u.getIndex()==u.getTab().length){
+                 $("#c"+(this.getIndex()-1)).html("<font  size='10px' color='green'>"+this.mot.charAt(this.getIndex()-1)+"</font>");
                 $(u.getCercle()).remove();
                 setTimeout(function(){
 
-                  
-                     u.getTab()[u.getIndex()-1].getEtatA().getCercle().setAttribute("fill","red");
-                     u.getTab()[u.getIndex()-1].getEtatA().getCercle2().setAttribute("fill","red");
-                    
+                     
+                     u.getTab()[u.getIndex()-1].getEtatA().getCercle().setAttribute("fill",u.getAutomate().getColorState());
+                     u.getTab()[u.getIndex()-1].getEtatA().getCercle2().setAttribute("fill",u.getAutomate().getColorState());
+
+                     u.mettreAJour();
                 },1000);
                 
 
-               // u.getTab[u.getIndex()-1].getEtatA().clignoter();
-                //alert(u.getTab[u.getIndex()-1].getEtatA());
     			for(i=0;i<u.getTab().length;i++)
-    				u.getTab()[i].setColor("blue");
+    				u.getTab()[i].setColor(u.getAutomate().getColorTransition());
     		}else u.animer();
 
     	}else{
@@ -94,9 +114,8 @@ function Animation(t,m){
         	
         	 setTimeout(function(){ 
 
-        	 	u.test(x+2,taille,path,u);
+        	 	u.test(x+(path.getTotalLength()/100),taille,path,u);
 
-        	 //	console.log(u.getVitesse());
         	 },u.getVitesse());
 
 
@@ -108,24 +127,17 @@ function Animation(t,m){
 
     this.animer=function(){
 
-    	/*
-    	if(this.ind==0){
 
-    		for(i=0;i<this.tab.length;i++)
-    			this.tab[i].setColor("yellow");
-
-
-    	}
-	*/
-
-		//if(this.ind==0) u[this.ind].getEtatDe().clignoter();
     	
     	var u=this.tab;
-	
-        //u[this.ind].getEtatDe().clignoter();
-		u[this.ind].getEtatDe().getCercle().setAttribute("fill","yellow");
+
+		u[this.ind].getEtatDe().getCercle().setAttribute("fill",this.getAutomate().getColorAnimation());
+
+        $("#c"+this.getIndex()).html("<font  size='30px' color='"+this.getAutomate().getColorAnimation()+"'>"+this.mot.charAt(this.getIndex())+"</font>");
+        if(this.getIndex()>0)
+            $("#c"+(this.getIndex()-1)).html("<font  size='100px' color='green'>"+this.mot.charAt(this.getIndex()-1)+"</font>");
         var u1=this;
-        u[this.ind].setColor("yellow");
+        u[this.ind].setColor(this.getAutomate().getColorAnimation());
 
         var path=u[u1.getIndex()].getPath();
 
@@ -138,8 +150,6 @@ function Animation(t,m){
     	this.test(0,taille,path,u1);
 
 
-        
-        //this.animer();
 
     };
 
@@ -170,7 +180,7 @@ function Animation(t,m){
     
     	if(this.animateMotion!=null) 
 {
-//$(this.animateMotion).remove();
+
 
 }
     		
