@@ -22,6 +22,71 @@ this.fin=false;
 this.el=null;
 
 
+this.getColor=function(){
+
+	return this.automate.getColorState();
+};
+
+this.getColorIndice=function(){
+
+	return this.automate.getColorIndice();
+};
+
+this.setColor=function(c){
+
+	this.cercle.setAttribute("fill",c);
+	if(this.fin)
+	this.cercle2.setAttribute("fill",c);
+};
+
+this.setColorIndice=function(c){
+	this.texte.setAttribute("fill",c);
+};
+
+
+this.reconnu=function(mot){
+
+	$("#pasReconnu").hide();
+	$("#reconnu").show();
+	var str="<table><tr>";
+	var id;
+	for(i=0;i<mot.length;i++){
+		id="c"+i;
+		str=str+"<td id='"+id+"' ><font  size='10px' color='green'>"+mot.charAt(i)+"</font></td>";
+	}
+	str=str+"</tr></table>"
+		
+    $("#reconnu").html("Le mot a été reconnu "+str);
+   
+  
+
+};
+
+
+this.pasReconnu=function(mot,ind){
+
+    var rec=mot.substring(0,ind);
+    var pr=mot.substring(ind,mot.length);
+  
+    $("#reconnu").hide();
+    $("#pasReconnu").show();
+    	var str="<table><tr>";
+	var id;
+	for(i=0;i<rec.length;i++){
+		id="c"+i;
+		str=str+"<td id='"+id+"' ><font  size='10px' color='green'>"+mot.charAt(i)+"</font></td>";
+	}
+	for(i=0;i<pr.length;i++){
+		
+		str=str+"<td><font  size='10px' color='red'>"+pr.charAt(i)+"</font></td>";
+	}
+
+	str=str+"</tr></table>"
+		
+    $("#pasReconnu").html("Le mot n'a pas été reconnu  "+str);
+
+
+};
 
 this.clignoter=function(){
 
@@ -31,7 +96,7 @@ u=this;
 
 setTimeout(function(){
 
-u.getCercle().setAttribute("fill","red");
+u.getCercle().setAttribute("fill",this.getColor());
 
 
 },500);
@@ -122,11 +187,7 @@ return Math.abs(this.num-e.getNum)-1;
 
 this.dessiner=function(){
 	
-	//for(var i=0;i<this.trans.length;i++)
-	//	this.trans[i].dessiner();
-		
-		//this.x=i*300+150;
-		//this.y=c*200+100;
+
 		this.x=this.colonne*300+200;
 		this.y=this.ligne*200+100;
 		this.cercle=document.createElementNS("http://www.w3.org/2000/svg","circle");
@@ -136,18 +197,19 @@ this.dessiner=function(){
 		
 		if(this.ini)
 			 this.cercle.setAttribute("fill","white");
-		else this.cercle.setAttribute("fill","red");
+		else this.cercle.setAttribute("fill",this.getColor());
 		
 		this.cercle.setAttribute("stroke","black");
 		this.cercle.setAttribute("r","40");
 		this.cercle.setAttribute("filter","url(#dropShadow)");
 		
 		if(this.fin){
+
 		this.cercle2=document.createElementNS("http://www.w3.org/2000/svg","circle");
 		this.cercle2.setAttribute("stroke-width","3");
 		this.cercle2.setAttribute("cx",this.x);
 		this.cercle2.setAttribute("cy",this.y);
-		this.cercle2.setAttribute("fill","red");
+		this.cercle2.setAttribute("fill",this.getColor());
 		this.cercle2.setAttribute("stroke","black");
 		this.cercle2.setAttribute("r","35");
 	}
@@ -161,6 +223,7 @@ this.dessiner=function(){
 		this.texte.setAttribute("x",this.x);
 		this.texte.setAttribute("y",this.y+20);
 		this.texte.setAttribute("class","id");
+		this.texte.setAttribute("fill",this.getColorIndice());
 
 
 		this.texte.setAttribute("font-size","50");
@@ -326,14 +389,13 @@ return this.getAutomate().getMatrice().verifColonne(this.colonne,this.ligne,e.ge
 this.memeLigne=function(e){
 	// renvoie vrai si les deux transation ont le meme indice ligne
 	return (this.ligne==e.getLigne());
-}
+};
 
 this.auDessus=function(e){
 // verifie si l'etat courant se situe au dessus de l'etat a
 
 
 return (this.ligne<e.getLigne());
-
 };
 
 this.aGauche=function(e){
@@ -370,9 +432,6 @@ return false;
 
 
 this.reconnaitre=function(mot,tab,ind){
-
-
-
 $("#reconnu").hide();
 $("#pasReconnu").hide();
 
@@ -385,12 +444,15 @@ if(ind==mot.length){
 		
 		$("#reconnu").show();
 		this.getAutomate().animation(tab,mot);
+		this.reconnu(mot);
 
 
 	}else{
 
 
-		$("#pasReconnu").show();
+		this.pasReconnu(mot,ind);
+		this.getAutomate().animation(tab,mot);	
+
 	}
 
 
@@ -409,13 +471,15 @@ if(ind==mot.length){
 			var etatArrivee=this.trans[i].getA();
 				
 			this.getAutomate().getEtat(etatArrivee).reconnaitre(mot,tab,ind);
+			return;
 		}
 
 
 
 	}
 
-
+	this.pasReconnu(mot,ind);
+	this.getAutomate().animation(tab,mot);
 
 }
 
