@@ -56,8 +56,8 @@ function Animation(t,m,aut){
 
 
     var cercle=document.createElementNS("http://www.w3.org/2000/svg","circle");
-	cercle.setAttribute("cx","-15");
-	cercle.setAttribute("cx","-15");
+	cercle.setAttribute("cx","-1500");
+	cercle.setAttribute("cx","-1500");
 	cercle.setAttribute("r","15");
 	cercle.setAttribute("fill","black");
 	cercle.setAttribute("stroke-width","1");
