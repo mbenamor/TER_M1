@@ -22,8 +22,81 @@ this.colorTransition="blue";
 this.colorAnimation="yellow";
 this.colorIndice="black";
 this.colorEtiquette="black";
-
+this.colorBackground="white";
 this.colorToChange=0;
+this.coef=0.01;
+
+
+
+this.scale=1;
+this.plus=true;
+this.x=0;
+this.y=0;
+this.dx=2;
+
+this.getScale=function(){
+	return this.scale;
+};
+
+this.translateX=function(xx){
+
+this.x+=xx/this.scale;
+this.updateOffsetX(xx);
+
+$("#ctn").attr("transform","scale("+this.scale+")translate("+this.x+" "+this.y+")");
+
+
+};
+
+this.scalePlus=function(){
+	
+this.plus=true;
+this.scale*=1.05;
+this.coef+=0.0001;
+this.updateOffsetX(this.dx*-1*0.1);
+this.dx*=1.225;
+$("#ctn").attr("transform","scale("+this.scale+")translate("+this.x+" "+this.y+")");
+};
+
+this.scaleMoin=function(){
+
+
+
+this.plus=false;
+this.scale*=0.95;
+
+console.log(this.scale);
+$("#ctn").attr("transform","scale("+this.scale+")translate("+this.x+" "+this.y+")");
+};
+
+this.scaleMoinBis=function(xx){
+
+this.plus=false;
+this.scale*=xx;
+
+console.log(this.scale);
+$("#ctn").attr("transform","scale("+this.scale+")translate("+this.x+" "+this.y+")");
+};
+
+this.translateY=function(yy){
+
+this.y+=yy/this.scale;
+$("#ctn").attr("transform","scale("+this.scale+")translate("+this.x+" "+this.y+")");
+this.updateOffsetY(yy);
+};
+
+
+
+
+this.updateOffsetX=function(x){
+	this.offsetX+=x;
+};
+
+this.updateOffsetY=function(y){
+this.offsetY+=(y);
+};
+
+
 
 
 this.getColorToChange=function(){
@@ -36,6 +109,14 @@ this.setColorToChange=function(c){
 	this.colorToChange=c;
 };
 
+
+this.getColorBackground=function(){
+	return this.colorBackground;
+};
+
+this.setColorBackground=function(c){
+	this.colorBackground=c;
+};
 this.getColorState=function(){
  return this.colorState;
 };
@@ -125,8 +206,14 @@ this.colorerAnimation=function(c){
 
 	this.setColorAnimation(c);
 
+
 };
 
+
+this.colorerBackground=function(c){
+
+	this.setColorBackground(c);
+};
 
 this.modifyColor=function(c){
 
@@ -146,6 +233,7 @@ switch(i){
 
 	case 4 : {this.colorerAnimation(c);break;}
 
+	case 5 : {this.colorerBackground(c);break;}
 
 }
 
@@ -164,31 +252,17 @@ this.m=new Matrice();
 this.initialiser=function(){
 
 
-//$("#svg").attr("height","10000");
-
-//var element =this.svg;
 
 var element=document.getElementById("svg");
  
- 
 
-/*
-
- if (element.offsetParent !== undefined) {
-		do {
-			this.offsetX += element.offsetLeft;
-			this.offsetY += element.offsetTop;
-		} while ((element = element.offsetParent));
-	}
-  
- */
 
 this.offsetX += $(element).offset().left;
 this.offsetY += $(element).offset().top;
 
 var defs=document.getElementById("definition");
-
-this.m.creerMatrice(this.n);
+var elem=this;
+this.m.creerMatrice(this.n,elem);
 
 
 
@@ -336,6 +410,7 @@ this.telecharger=function(){
 			
 				
 				var texte=$('#droite').html();
+				
 				$("#texte").html(texte);
 				return texte;
 				
