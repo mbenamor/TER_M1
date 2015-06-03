@@ -1,117 +1,681 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="fonts/favicon.ico">
+
+  
+
+  <!-- Incorporez du CSS dans la page  -->
+
+  <style type="text/css" media="screen">
+
+ .colorBlock {
+            margin: 10px;
+            border-radius: 5px;
+            background: rgb(30,30,30);
+        }
+        .color {
+            height: 60px;
+            width: 100px;
+            padding: 0px;
+            border-radius: 5px;
+        }
+        .text {
+            text-align: center;
+            color: white;
+            font-size: 11px;
+        }
+        #palette {
+            margin: auto;
+            width: 800px;
+            background: rgb(50,50,50);
+        }
+
+        @media screen and (min-width: 640px) {
+            .colorBlock {
+                float: left;
+            }
+            .text {
+                padding: 5px;
+            }
+        }
+
+        /* petit écran */
+        @media screen and (max-width: 640px) {
+             .colorBlock {
+                 width: 300px;
+                 height: 60px;
+             }
+             .color {
+                float: left;
+             }
+            .text {
+                padding-top: 20px;
+            }
+        }
+  
+			text {
+  font: 50px sans-serif;
+  pointer-events: none;
+}
+
+text.id {
+  text-anchor: middle;
+  font-weight: bold;
+  -webkit-user-select: none; 
+-khtml-user-select: none;
+-moz-user-select: none;
+}
+	</style>
+  
+  
+
+		
+		
+	
+		<script>
 
 
-    <title>Justified Nav Template for Bootstrap</title>
+    $("#colors").hide();
+    $("#navPalette").hide();
+    $("#changement").hide();
+     function convert(r, g, b){
+        return '#'+('0'+r.toString(16)).slice(-2)+('0'+g.toString(16)).slice(-2)+('0'+b.toString(16)).slice(-2);
+    }
+        
+        function palette() {
+            for (var r=0; r <= 255; r += 51)
+            for (var g=0; g <= 255; g += 51)
+            for (var b=0; b <= 255; b += 51) {
+                var s=convert(r,g,b);
+                $('#palette').append('<div value="'+s+'" class="colorBlock"><div class="color" style="background: rgb('+r+','+g+','+b+')"></div><div class="text">'+s+ '</div></div>');
+            }
+        }
 
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+        palette();
+      
 
-    <!-- Custom styles for this template -->
-    <link href="css/justified-nav.css" rel="stylesheet">
+ $("#personnaliser").click(function(){
 
-    <link href="css/bootstrap-theme.css" rel="stylesheet">
-    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="css/bootstrap.css" rel="stylesheet">
- 
-
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="js/ie-emulation-modes-warning.js"></script>
-
-      <link rel="stylesheet" type="text/css" media="all" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css">
-      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-
-
-
-
-    <script src="automate/automate.js"></script>
-    <script src="automate/transition.js"></script>
-    <script src="automate/etat.js"></script>
-    <script src="automate/matrice.js"></script>
-    <script src="automate/animation.js"></script>
-
-      <script src="automate/fichier.js"></script>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-<script>
-
-    $(document).ready(function(){
+  $("#dessin").hide();
+  $("#navDessin").hide();
+  $("#changement").show();
+  $("#colors").show();
+  $("#navPalette").show();
+  
+ });     
 
 
-      $("#contenaire").load("acceuil.html");
-      $(".nav").click(function(){
+      $("#reconnu").hide(); 
+      $("#pasReconnu").hide();
+      
+      $("#fichier").click(function(){
 
 
-
-        $('#contenaire').load($(this).attr("value")+".html");
-
+        $("#fileInput").trigger('click');
 
 
       });
 
+         t=[]; //les transations
+
+        et=[];// les etiquettes
+
+        f=[];// les etats finaux
+          
+        ini=[];//les etats initiaux
+
+
+
+            $("#play").hide();
+        $("#stop").hide();
+
+        $("#textarea").hide();
+        svg=$("#svg")[0];
+
+
+
+        var fileInput = document.getElementById('fileInput');
+        //var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+        fileInput.addEventListener('change', function(e) {
+          var file = fileInput.files[0];
+        
+
+
+      
+
+
+      var textType = /text.*/;
+
+      if (file.type.match(textType)) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+           
+
+
+          traitement(reader.result);
+    
+
+        }
+
+        reader.readAsText(file);  
+      } else {
+        fileDisplayArea.innerText = "File not supported!";
+      }
+    });
 
 
 
 
 
 
+  $('#svg').on(
+    'dragover',
+    function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+);
+$('#svg').on(
+    'dragenter',
+    function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+);
+
+
+
+$('#svg').on(
+    'drop',
+    function(e){
+        if(e.originalEvent.dataTransfer){
+            if(e.originalEvent.dataTransfer.files.length) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+            
+               
+
+                var file = e.originalEvent.dataTransfer.files[0];
+        
+
+
+      
+
+
+      var textType = /text.*/;
+
+      if (file.type.match(textType)) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+           
+
+
+          traitement(reader.result);
+    
+
+        }
+
+        reader.readAsText(file);  
+      } else {
+        fileDisplayArea.innerText = "File not supported!";
+      }
+            }   
+        }
+    }
+);
+            
+        $("#telsvg").click(function(){
+
+                    
+                    $(this).attr("href",'data:svg/plain;charset=utf-8,'+encodeURIComponent(aut.telecharger())).attr("download","fichier.svg");
+
+        }); 
+
+
+        $("#telsvg2").click(function(){
+
+                    
+                    $(this).attr("href",'data:svg/plain;charset=utf-8,'+encodeURIComponent(aut.telecharger2())).attr("download","fichier.svg");
+
+        });  
+
+
+        
+        $("#play").click(function(){
+
+          aut.animer2();
+
+        });
+
+        $("#stop").click(function(){
+
+          aut.pause();
+
+        });
+
+        $("textarea").keydown(function(e){
+                    
+                     if (e.keyCode == 13 && !e.shiftKey)
+                         {
+                  e.preventDefault();
+                        
+
+                  
+                
+                        aut.reconaissance($("#textarea").val());
+
+                        $("textarea")[0].value="";
+                       }
+
+
+
+                      
+        });  
+
+        $("#recon").click(function(){
+
+          aut.reconaissance($("#textarea").val());
+
+          $("textarea")[0].value="";
+
+        });
+
+           $('#defaultslide').slider({ 
+            max: 100,
+            min: 5,
+            value: 100,
+            slide: function(e,ui) {
+              
+
+              $('#currentval').html(ui.value);
+              aut.vitesse(ui.value);
+            
+
+            }
+            });
+  
+
+
+           $(".colorBlock").dblclick(function(){
+
+              aut.modifyColor($(this).attr("value"));
+              
+              $("#colors").hide();
+              $("#navPalette").hide();
+              $("#changement").hide();
+              $("#dessin").show();
+              $("#navDessin").show();
+              
+
+           });
+
+           $("#etats").click(function(){
+
+              $("#changement").html('<center><font size="30px">Changement de la couleur des états</font></center>');
+              aut.setColorToChange(0);
+           });
+
+           $("#indices").click(function(){
+              $("#changement").html('<center><font size="30px">Changement de la couleur des indices</font></center>');
+              aut.setColorToChange(2);
+           });
+
+           $("#transitions").click(function(){
+              $("#changement").html('<center><font size="30px">Changement de la couleur des transitions</font></center>');
+              aut.setColorToChange(1);
+           });
+
+           $("#etiquettes").click(function(){
+              $("#changement").html('<center><font size="30px">Changement de la couleur des étiquettes</font></center>');
+              aut.setColorToChange(3);
+           });
+
+           $("#animation").click(function(){
+              $("#changement").html('<center><font size="30px">Changement de la couleur de l\'animation</font></center>');
+              aut.setColorToChange(4);
+            
+           });
+
+           $("#background").click(function(){
+            
+              $("#changement").html('<center><font size="30px">Changement de la couleur de l\'arrière plan</font></center>');
+              aut.setColorToChange(5);
+           });
+
+
+var clic=false;
+function plusDown(){
+
+  if(clic){
+    aut.scalePlus();
+    setTimeout(function(){
+
+      
+      plusDown();
+    },10);
+
+  }
+
+}
+
+function moinDown(){
+
+  if(clic){
+    console.log("moin down");
+    aut.scaleMoin();
+    setTimeout(function(){
+
+      moinDown();
+    },10);
+
+  }
+}
+
+$("#plus").click(function(){
+
+
+//aut.scalePlus();
+
+});
+
+$("#plus").on("mousedown",function(){
+
+clic=true;
+plusDown();
+
+});
+
+$("#plus").on("mouseup",function(){
+
+clic=false;
+
+});
+
+$("#moin").click(function(){
+//aut.scaleMoin();
+});
+
+$("#moin").on("mousedown",function(){
+clic=true;
+moinDown();
+});
+$("#moin").on("mouseup",function(){
+clic=false;
+});
+
+
+
+$("#svg").on("dblclick",function(){
+
+  if(plus){
+           aut.scalePlus();
+
+  }else{
+
+       aut.scaleMoin();
+
+  }
+});
+
+
+var clic2=false;
+
+function translateClickX(xx){
+
+aut.translateX(xx);
+if(clic2){
+
+       
+    setTimeout(function(){
+
+      translateClickX(xx);
+    },10);
+
+  }
+
+
+
+}
+
+function translateClickY(yy){
+aut.translateY(yy);
+if(clic2){
+
+       
+    setTimeout(function(){
+
+      translateClickY(yy);
+    },10);
+
+  }
+
+}
+
+$("#haut").on("mousedown",function(){
+clic2=true;
+translateClickY(-10);
+});
+$("#haut").on("mouseup",function(){
+clic2=false;
+});
+$("#bas").on("mousedown",function(){
+  clic2=true;
+translateClickY(10);
+});
+$("#bas").on("mouseup",function(){
+  clic2=false;
+});
+$("#gauche").on("mousedown",function(){
+  clic2=true;
+translateClickX(-10);
+});
+$("#gauche").on("mouseup",function(){
+  clic2=false;
+});
+$("#right").on("mousedown",function(){
+  clic2=true;
+translateClickX(10);
+});
+$("#right").on("mouseup",function(){
+  clic2=false;
+});
+
+var xdown;
+var ydown;
+var dxdown;
+var dydown;
+var down=false;
+
+$("#svg").on("mousedown",function(e){
+  if ((!$(e.target).is("circle") || $("path").has(e.target).length )&&(!$(e.target).is("path") || $("path").has(e.target).length )) {
+    xdown=e.pageX;
+    ydown=e.pageY;
+    dxdown=e.pageX;
+    dydown=e.pageY;
+    down=true;
+    console.log("mousedown");
+  }
+  });
+  
+  
+  $(document).on("mouseup",function(e){
+  
+  down=false;
+
+  
+  });
+
+  $("body").on("mousemove",function(e){
+
+    if(down){
+      var dx=e.pageX-xdown;
+      var dy=e.pageY-ydown;
+
+      aut.translateX(e.pageX-dxdown);
+      aut.translateY(e.pageY-dydown);
+      dxdown=e.pageX;
+      dydown=e.pageY;
+      
+     // $("#ctn").attr("transform","scale("+scale+")translate("+(x+dx)+" "+(y+dy)+")");
+    }
+    
 
   });
 
-</script>
-  </head>
 
-  <body>
 
-    <div class="container">
 
-      <!-- The justified navigation menu is meant for single line per list item.
-           Multiple lines will require custom code not provided by Bootstrap. -->
-      <div class="masthead">
-        <h3 class="text-muted">Automate</h3>
-        <nav>
-          <ul class="nav nav-justified">
-            <li><a class="nav" value="acceuil" href="#">Acceuil</a></li>
-            <li><a class="nav" value="automate/index"  href="#">Demo</a></li>
-            <li><a class="nav" value="documentation"  href="#">Documentation</a></li>
-            <li><a class="nav" value="syntaxe" href="#">Syntaxe</a></li>
-            <li><a class="nav" value="creation" href="#">création</a></li>
-         
-          </ul>
-        </nav>
+      </script>
+
+        <div>
+		<div id="reconnu" class="alert alert-success" role="alert">Le mot a été reconnu</div>
+    	<div id="pasReconnu" class="alert alert-info" role="alert">Le mot n'a pas été reconnu</div>
+    	<input type="file" id="fileInput" style="visibility:hidden;position:absolute;top:0;left:0">
+
+ 
+  			
+
+        
+        <ol id="navDessin" class="breadcrumb">
+  			
+  			<li><a id="fichier" href="#">chargement d'un fichier</a></li>
+  		    <li><a href="#" id="telsvg">SVG</a></li>
+          <li><a href="#" id="telsvg2">SVGDom</a></li>
+  			<li><a href="automate/test.txt" download>Exemple</a></li>
+        <li><a id="personnaliser" href="#" >Personnaliser les couleurs</a></li>
+  			
+  		
+		</ol>
+
+
+    <ol id="navPalette" class="breadcrumb">
+        
+        <li ><a id="etats" href="#">Etats</a></li>
+        <li><a id="indices" href="#">Indices</a></li>
+        <li><a id="transitions" href="#">Transitions</a></li>
+        <li><a id="etiquettes" href="#">Etiquettes</a></li>
+        <li><a id="animation" href="#">Animation</a></li>
+        <li><a id="background" href="#">arrière plan</a></li>
+        
+    </ol>
+          
+      <div id="changement" class="alert alert-success" role="alert"><center><font size="30px">Changement de la couleur des états</font></center></div>
+           
+<div id="colors">
+<div id="palette"></div>
+</div>  
+
+          
+
+<div id="dessin" class="jumbotron">
+
+       <center>   <table><tr><td><textarea id="textarea"  rows="1" placeholder="entrer un mot à reconnaitre"></textarea></td><td>
+                 <a class="btn btn-lg" id="recon" href="#" role="button">Lancer</a></td></tr></table></center>
+          
+          <div id="play" class="glyphicon glyphicon-play" ></div>
+          <div id="stop" class="glyphicon glyphicon-pause"></div>
+          <div id="content">
+          
+          
+      
+      <div id="defaultval">
+        vitesse <span id="currentval">100 %</span>
       </div>
+      
+      <div id="defaultslide"></div>
+      
+ 
+</div>
+ <br>
 
-      <br><br>
-      <div id="contenaire">
+<center>
+<table>
+  <tr><td colspan="4" align="center"> <span class="glyphicon glyphicon-arrow-up" id="haut" aria-hidden="true"></span></td></tr>
+  <tr><td align="left">
+            <span class="glyphicon glyphicon-arrow-left" id="gauche" aria-hidden="true">&nbsp;
+      </td>
+      <td>
+            <span class="glyphicon glyphicon-zoom-out" id="moin"  aria-hidden="true"></span>
+      </td>
+      <td>
+          <span class="glyphicon glyphicon-zoom-in" id="plus" aria-hidden="true"></span>
+      </td>
+      <td align="right">&nbsp;
+          <span class="glyphicon glyphicon-arrow-right" id="right" aria-hidden="true"></span>
+      </td></tr>
+      <tr><td colspan="4" align="center"> <span class="glyphicon glyphicon-arrow-down" id="bas" aria-hidden="true"></span></td></tr></table>
+
+
+</center>
      
 
 
 
-    </div>
+     <div id="droite">
+			
 
-      <!-- Site footer --
-      <footer class="footer">
-        <p>&copy; Company 2014</p>
-      </footer>
+	
 
-    </div> <!-- /container -->
+      <?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" 
+  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+		<svg   id="svg" height="800" width="1000"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+		 
+
+      <style type="text/css" >
+      <![CDATA[
+
+              text {
+  font: 50px sans-serif;
+  pointer-events: none;
+}
+
+text.id {
+  text-anchor: middle;
+  font-weight: bold;
+  -webkit-user-select: none; 
+-khtml-user-select: none;
+-moz-user-select: none;
+}
+
+      ]]>
+    </style>
 
 
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="js/ie10-viewport-bug-workaround.js"></script>
-  </body>
-</html>
+
+     <rect id="plan" x="0" y="0" width="1000" height="800" fill="white" id="bpard" />
+		<defs id="definition">
+    <marker id="Triangle"
+      viewBox="0 0 10 10" refX="0" refY="5" 
+      markerUnits="strokeWidth"
+      markerWidth="4" markerHeight="3"
+      orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+
+      <marker id="cercle" markerWidth="8" markerHeight="8" refx="5" refy="5">
+        <circle cx="5" cy="5" r="1" style="stroke: none; fill:#000000;"/>
+    </marker>
+
+     <filter id="dropShadow">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+    <feOffset dx="5" dy="5" />
+    <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+    </feMerge>
+  </filter>
+
+    </defs>
+	<g id="ctn"  >
+    
+   </g>	
+		</svg>
+
+	</div>
+   
+<div id="texte"></div>
+
+</div>
+</div>
