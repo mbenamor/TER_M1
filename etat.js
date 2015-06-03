@@ -15,7 +15,8 @@ this.g=null;
 this.texte=null;
 this.ini=false;
 this.fin=false;
-
+this.dx=0;
+this.dy=0;
 
 
 // c'est l'element du dom svg dans lequel l'etat sera dessinée
@@ -232,9 +233,13 @@ this.dessiner=function(){
 		this.el.appendChild(this.g);
 	var u=this;
 	
-	$(this.g).on("mousedown",function(){
+	$(this.g).on("mousedown",function(e){
 	
+
 		u.down();
+		u.dx=e.pageX;
+		u.dy=e.pageY;
+		e.stopPropagation();
 	
 	});
 	
@@ -245,11 +250,13 @@ this.dessiner=function(){
 	
 	});
 	
-	$(this.el).on("mousemove",function(e){
+	$("body").on("mousemove",function(e){
 	
 	if(u.isClicked()){
-		u.setCord(e.pageX-u.getAutomate().getOffsetX(),e.pageY-u.getAutomate().getOffsetY());
-		
+		//u.setCord(e.pageX-u.getAutomate().getOffsetX(),e.pageY-u.getAutomate().getOffsetY());
+		 u.setCord(e.pageX-u.dx,e.pageY-u.dy)
+		 u.dx=e.pageX;
+		 u.dy=e.pageY;
 		// ceci permet de redessiner toutes les transitions
 		//u.getAutomate().redessinerTrans();;
 		
@@ -305,8 +312,8 @@ this.colonne=c;
 
 this.setCord=function(xcor,ycor){
 
-	this.x=xcor;
-	this.y=ycor;
+	this.x+=(xcor/this.getAutomate().getScale());
+	this.y+=(ycor/this.getAutomate().getScale());
 	this.cercle.setAttribute("cx",this.x);
 	this.cercle.setAttribute("cy",this.y);
 	
